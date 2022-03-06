@@ -1,4 +1,4 @@
-# github.com/etcha-sketch
+﻿# github.com/etcha-sketch
 # 03/6/2022
 # This script is a part of the RandomPowerShellAutomation repository
 # These scripts were/are not all polished, and may require some customization to work.
@@ -9,7 +9,7 @@
 $Script:CompanyName = 'Test Company'
 $Script:ScriptName = 'Demo Script'
 $Script:ScriptVersion = '0.1'
-$Script:RegPath = "HKCU:\SOFTWARE\ScriptAutomation\$($Script:CompanyName)\Logon\$($Script:ScriptName)" # Don't put a trailing forward slash
+$Script:RegPath = "HKCU:\SOFTWARE\ScriptAutomation\$($Script:CompanyName)\Logon\$($Script:ScriptName)"
 $Script:LogPath = "$($env:LOCALAPPDATA)\ScriptAutomation\$($Script:CompanyName)\Startup\$($Script:ScriptName)_$(Get-Date -format 'yyyy-MM-dd').log"
 # END VARIABLE DECLARATIONS
 
@@ -43,9 +43,10 @@ function Setup-ScriptRegUser
 {
     if ($Script:VerboseLog) { Write-Log "Setting Up Registry Paths" }
     $GenPath = ''
-    Foreach ($Hive in (($Script:RegPath).Split('\')))
+	$Script:RegPath = ($Script:RegPath).Replace('/','\')
+    Foreach ($Hive in ((($Script:RegPath).Split('\')))| Where {$_ -ne ''})
     {
-        $GenPath += ($Hive + '\')
+        $GenPath += ((($Hive).Replace('\','')) + '\')
         if (Test-path $GenPath)
         {
             if ($Script:VerboseLog) { Write-Log "    $($GenPath) already exists." }

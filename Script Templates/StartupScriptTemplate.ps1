@@ -11,7 +11,7 @@
 $Script:CompanyName = 'Test Company'
 $Script:ScriptName = 'Demo Script'
 $Script:ScriptVersion = '0.1'
-$Script:RegPath = "HKLM:\SOFTWARE\ScriptAutomation\$($Script:CompanyName)\Startup\$($Script:ScriptName)" # Don't put a trailing forward slash
+$Script:RegPath = "HKLM:\SOFTWARE\ScriptAutomation\$($Script:CompanyName)\Startup\$($Script:ScriptName)"
 $Script:LogPath = "$($env:windir)\Logs\ScriptAutomation\$($Script:CompanyName)\Startup\$($Script:ScriptName)_$(Get-Date -format 'yyyy-MM-dd').log"
 # END VARIABLE DECLARATIONS
 
@@ -45,9 +45,10 @@ function Setup-ScriptRegSystem
 {
     if ($Script:VerboseLog) { Write-Log "Setting Up Registry Paths" }
     $GenPath = ''
-    Foreach ($Hive in (($Script:RegPath).Split('\')))
+    $Script:RegPath = ($Script:RegPath).Replace('/','\')
+	Foreach ($Hive in ((($Script:RegPath).Split('\')))| Where {$_ -ne ''})
     {
-        $GenPath += ($Hive + '\')
+        $GenPath += ((($Hive).Replace('\','')) + '\')
         if (Test-path $GenPath)
         {
             if ($Script:VerboseLog) { Write-Log "    $($GenPath) already exists." }
